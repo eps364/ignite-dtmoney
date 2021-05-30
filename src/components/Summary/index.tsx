@@ -2,11 +2,24 @@ import { Container } from "./styles";
 import incomeTmg from "../../assets/income.svg"
 import outcomeTmg from "../../assets/outcome.svg"
 import totalImg from "../../assets/total.svg"
-import { useContext } from "react";
-import { TransactionsContext } from "../../context/TransactionsContext";
+import { useTransactions } from "../../hooks/useTransactions";
 
 export function Summary() {
-  const { transitions } = useContext(TransactionsContext)
+  const { transitions } = useTransactions()
+  const summary = transitions.reduce((acc, transition) => {
+    if (transition.type === 'deposit') {
+      acc.deposit += transition.amount
+      acc.total += transition.amount
+    } else {
+      acc.withdraw += transition.amount
+      acc.total -= transition.amount
+    }
+    return acc
+  }, {
+    deposit: 0,
+    withdraw: 0,
+    total: 0
+  })
   return (
     <Container>
       <div>
@@ -14,7 +27,10 @@ export function Summary() {
           <p>Entradas</p>
           <img src={incomeTmg} alt="Entradas" />
         </header>
-        <strong>R$ 1.000,00</strong>
+        <strong>{new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }).format(summary.deposit)}</strong>
       </div>
 
       <div>
@@ -22,7 +38,10 @@ export function Summary() {
           <p>Saídas</p>
           <img src={outcomeTmg} alt="Saídas" />
         </header>
-        <strong>- R$ 500,00</strong>
+        <strong>{new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }).format(summary.withdraw)}</strong>
       </div>
 
       <div className="heightlight-background">
@@ -30,7 +49,10 @@ export function Summary() {
           <p>Total</p>
           <img src={totalImg} alt="Total" />
         </header>
-        <strong>- R$ 500,00</strong>
+        <strong>{new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }).format(summary.total)}</strong>
       </div>
     </Container>
 
