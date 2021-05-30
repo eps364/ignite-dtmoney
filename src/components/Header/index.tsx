@@ -6,7 +6,7 @@ interface HeaderProps {
 }
 export function Header({ onOpenNewTransitionModal }: HeaderProps) {
   return (
-    <Container>Header
+    <Container>
       <Content>
         <img src={logoImg} alt="dt money" />
         <button
